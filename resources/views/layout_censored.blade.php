@@ -41,8 +41,15 @@
             <ul class="dropdown-menu" role="menu">
                 @foreach ($filter as $key=>$val)
 
-                    <?php $t_get = $_GET;$t_get['page']=1;$tf = explode('=',$key);$t_get[$tf[0]]=$tf[1];$t_get['ltitle[]']=$val;  ?>
-                    <li id="cellshowall"> <a href="{{action('AvbookController@index', $t_get)}}" t="{{url()->full()}}&page=1&{{$key}}&ltitle[]={{$val}}"  target="_blank">
+                    <?php
+	                    $t_get = $_GET;
+	                    $t_get['page'] = 1;
+	                    $tf = explode('=', $key, 2);
+	                    $t_get[$tf[0]] = $tf[1];
+	                    $t_get['ltitle[]']=$val;  
+                    ?>
+                    <!--<li id="cellshowall"> <a href="{{action('AvbookController@index', $t_get)}}" t="{{url()->full()}}&page=1&{{$key}}&ltitle[]={{$val}}" >-->
+                    <li id="cellshowall"> <a href="{{action('AvbookController@index', $t_get)}}" t="{{url()->full()}}&page=1&{{$key}}&ltitle[]={{$val}}" >
                             <span class="glyphicon glyphicon-film"> </span>{{" ".$val}}</a></li>
                 @endforeach
 
@@ -92,49 +99,113 @@
                 <?php if (!empty($res_star)): ?>
                 <div class="item masonry-brick" style="position: absolute; top: 0px; left: 0px;">
                     <div class="avatar-box">
+                    
                         <div class="photo-frame">
+                        <?php if (!file_exists("mono/actjpgs/".$res_star['star_pic'])): ?>
                             <img class="star_pic"
                                  src="https://jp.netcdn.space/mono/actjpgs/<?php echo $res_star['star_pic'] ?>"
                                  title="<?php echo $res_star['star_name'] ?>">
+                        <?php else :?>
+							<img class="star_pic"
+                                 src="mono/actjpgs/<?php echo $res_star['star_pic'] ?>"
+                                 title="<?php echo $res_star['star_name'] ?>">
+                        <?php endif; ?>
                         </div>
+                        <?php 
+						function birthday($birthday){ 
+							$age = strtotime($birthday); 
+							if($age === false){ 
+								return false; 
+							} 
+							list($y1,$m1,$d1) = explode("-",date("Y-m-d",$age)); 
+							$now = strtotime("now"); 
+							list($y2,$m2,$d2) = explode("-",date("Y-m-d",$now)); 
+							$age = $y2 - $y1; 
+							if((int)($m2.$d2) < (int)($m1.$d1)) 
+							$age -= 1; 
+							return $age; 
+						} 
+						//echo birthday('1986-07-22'); 
+						?>
+						
+						<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                         <div class="photo-info">
-                            <span class="pb10"><?php echo $res_star['star_name'] ?></span>
+                        	<?php if (!file_exists("mono/actjpgs/".$res_star['star_pic'])): ?>
+                            	<span class="pb10"><a target="_blank" href="https://ja.wikipedia.org/wiki/<?php echo $res_star['star_name'] ?>"><?php echo $res_star['star_name'] ?></a></span>
+                            <?php else :?>
+                            	<span class="pb10" style="color:#42b4e094;"><a target="_blank" href="https://ja.wikipedia.org/wiki/<?php echo $res_star['star_name'] ?>"><?php echo $res_star['star_name'] ?></a></span>
+                            <?php endif; ?>
+                            <?php if ($res_star['star_birthday']):?>
                             <p>生日: {{$res_star['star_birthday']}}</p>
-                            <p>年龄: <?php echo $res_star['star_age'] ?></p>
-                            <p>身高: <?php echo $res_star['star_height'] ?>cm</p>
+                            <p>年龄: <?php echo birthday($res_star['star_birthday']); ?></p>
+                            <?php endif; ?>
+                            <?php if ($res_star['star_height']):?>
+                            <p>身高: <?php echo $res_star['star_height'] ?> cm</p>
+                            <?php endif; ?>
                             <p>罩杯: <?php echo $res_star['star_cupsize'] ?></p>
-                            <p>胸围: <?php echo $res_star['star_bust'] ?>cm</p>
-                            <p>腰围: <?php echo $res_star['star_waist'] ?>cm</p>
-                            <p>臀围: <?php echo $res_star['star_hip'] ?>cm</p>
-                            <p>出生地: <?php echo $res_star['hometown'] ?></p>
-                            <p>爱好: <?php echo $res_star['hobby'] ?></p>
+                            <p>胸围: <?php echo $res_star['star_bust'] ?> cm</p>
+                            <p>腰围: <?php echo $res_star['star_waist'] ?> cm</p>
+                            <p>臀围: <?php echo $res_star['star_hip'] ?> cm</p>
+                            <?php if ($res_star['twitter']):?>
+                            	
+                            	<p>Twitter: <a target="_blank" href="https://twitter.com/<?php echo $res_star['twitter'] ?>"><?php echo $res_star['twitter'] ?></a></p>
+                            	<!--
+                            	<p><a class="twitter-timeline" data-lang="ja"  data-height="200" data-dnt="true" data-theme="light" href="https://twitter.com/<?php echo $res_star['twitter'] ?>">Tweets <?php echo $res_star['twitter'] ?></a> </p>
+                            	-->
+                            <?php endif; ?>
+                            <?php if ($res_star['instagram']):?>
+                            	<p>Instagram: <a target="_blank" href="https://www.instagram.com/<?php echo $res_star['instagram'] ?>/"><?php echo $res_star['instagram'] ?></a></p>
+                            <?php endif; ?>
+                            <?php if ($res_star['hometown']):?>
+                            	<p>出生地: <?php echo $res_star['hometown'] ?></p>
+                            <?php endif; ?>
+                            <?php if ($res_star['hobby']):?>
+                            	<p>爱好: <?php   echo $res_star['hobby'] ?></p>
+                            <?php endif; ?>
+                            
+                            <p><a target="_blank" style="color:#CC0000;" href="https://susukino-peropero.com/av%E9%A2%A8%E4%BF%97%E5%AC%A2%E5%9C%A8%E7%B1%8D%E6%83%85%E5%A0%B1%EF%BC%9A<?php echo $res_star['star_name'] ?>/#toc6">av風俗嬢在籍情報</a</p>
+                            <p><a target="_blank" style="color:#CC0000;" href="https://ja.wikipedia.org/wiki/<?php echo $res_star['star_name'] ?>">百科事典</a</p>
+                            <p><a target="_blank" style="color:#CC0000;" href="https://airav.cc/avgirlInfo.aspx?Type=2&Search=<?php echo $res_star['star_name'] ?>">AirAV</a</p>
+                            
                             <p>
                                 <a href="censored?st0=<?php echo $res_star['code_36'] ?>"
                                    target="_blank" style="color:#CC0000;">独自演出作品</a></p>
-                            <p><a href="https://avso.pw/cn/search/<?php echo $res_star['code_36'] ?>"
-                                  target="_blank" style="color:#CC0000;"> </a></p>
-
-
                         </div>
+                        
                     </div>
+                    <div style="height: 3300px; "><?php if ($res_star['twitter']):?><p><a class="twitter-timeline" data-lang="ja"  data-height="3300" data-dnt="true" data-theme="light" href="https://twitter.com/<?php echo $res_star['twitter'] ?>"></a> </p><?php endif; ?></div>
+
                 </div>
                 <?php endif; ?>
 
 
                 <?php
-                $b = 2;
-                if ($b == 1) {
-                    $picurl = 'https://jp.netcdn.space/digital/video/';
-                } elseif ($b == 2) {
-                    $picurl = "https://pics.dmm.co.jp/digital/video/";
-                    //$picurl ="";
-                } ?>
+                $b = 3;
+				if ($b==1) {
+				    $picurl ='https://jp.netcdn.space/digital/video/';
+				    $picurl2 ='https://pics.dmm.co.jp/mono/movie/adult/';
+				}elseif ($b==2){
+				    $picurl ="https://pics.dmm.co.jp/digital/video/";
+				    $picurl2 ="https://pics.dmm.co.jp/mono/movie/adult/";
+				}elseif ($b==3){
+				    $picurl ='https://pics.vpdmm.cc/digital/video/';
+				    $picurl2 ='https://pics.vpdmm.cc/mono/movie/adult/';
+				}elseif ($b==4){
+				    $picurl ='http://utry320.synology.me:5080/digital/video/';
+				    $picurl2 ='https://jp.netcdn.space/mono/movie/adult/';
+				} 
+                ?>
                     <?php foreach ($list as $movie_info): ?>
                     <div class="item masonry-brick" style="position: absolute; top: 0px; left: 0px;">
-                        <a class="movie-box"  target="_blank"  href = '{{url("/movie?censored_id={$movie_info['censored_id']}&id={$movie_info['code_36']}") }}'>
+                        <a class="movie-box" href = '{{url("/movie?censored_id={$movie_info['censored_id']}&id={$movie_info['code_36']}") }}'>
                             <div class="photo-frame">
                                 <img class='blur0 imgjumpnull'
-                                     src="<?php echo $picurl . str_replace('pl.jpg', 'ps.jpg', $movie_info['movie_pic_cover']) ?>"
+		                        	<?php if (!file_exists("digital/video/".str_replace('pl.jpg', 'ps.jpg', $movie_info['movie_pic_cover']))): ?>
+		                            	src="<?php echo $picurl . str_replace('pl.jpg', 'ps.jpg', $movie_info['movie_pic_cover']) ?>"
+		                            <?php else :?>
+		                            	src="<?php echo 'digital/video/' . str_replace('pl.jpg', 'ps.jpg', $movie_info['movie_pic_cover']) ?>"
+		                            <?php endif; ?>
+                                     
                                      data="index.php/jav/javsg/<?php echo $movie_info['censored_id'] ?>&id=<?php echo $movie_info['code_36'] ?>"
                                      title="<?php echo $movie_info['movie_title'] ?>">
                                 <!--   onerror="this.src='avbook/deft.jpg'" -->
@@ -172,8 +243,8 @@
     </div>
     <script>
         $('.pagination').addClass('pagination-lg');
-        $("[rel='next']").html('下一页');
-        $("[rel='prev']").html('上一页');
+        $("[rel='next']").html('NEXT');
+        $("[rel='prev']").html('PREV');
     </script>
 
 @endsection

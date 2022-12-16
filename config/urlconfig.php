@@ -1,7 +1,8 @@
 <?php
 
-return ['avmoohost'=>'avmoo.asia',
-    'javbushost'=>'www.javbus.life',
-    'javlibhost'=>'www.c32r.com',
-    'btsourl' => 'https://btsow.pw/search/'
+return ['avmoohost'=>'avmoo.click', //https://avmoo.click/
+    'javbushost'=>'www.javbus.com', //https://www.javbus.com/
+    'javlibhost'=>'www.javlibrary.com', //https://javlib.com/
+    '7mmtvhost'=>'7mmtv.sx', //https://7mmtv.sx/
+    'btsourl' => 'https://btsow.beauty/search/'
 ];

@@ -32,7 +32,7 @@
                 </div>
             </div>
             <ul class="nav navbar-nav">
-                <li class="active"><a href='{{url("/censored?mg=1")}}'>有碼</a></li>
+                <li class="active"><a href='{{url("/censored?")}}'>有碼</a></li>
                 {{--<li><a href="/uncensored">無碼</a></li>--}}
                 {{--<li class="hidden-md hidden-sm"><a href="https://www.javbus.xyz/">歐美</a></li>--}}
                 {{--<li><a href="JavaScript:;" onclick="setall('4m');">allz</a></li>--}}

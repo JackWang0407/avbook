@@ -62,65 +62,250 @@
 
 <div class="container">
     <?php
-    $b=1;
+    //$b=3;
     if(isset($_GET['picurl'])){
 
     }
+
+	$b=3;
+	/*
+	$urllist = array (
+		'utry320.synology.me:5080',
+		'jp.netcdn.space',
+		'pics.dmm.co.jp',
+		'pics.vpdmm.cc',
+		
+	);
+
+	foreach($urllist as $url)
+	{
+		$curl = curl_init('https://'.$url.'/digital/video/'.$movie_info['movie_pic_cover']);
+		curl_setopt($curl, CURLOPT_NOBODY, true);
+		curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 10);
+		curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+		
+		$result = curl_exec($curl);
+		if ($result !== false) {
+			if (curl_getinfo($curl, CURLINFO_HTTP_CODE) == 200) {
+				
+				
+			}
+			$baseurl = $url;
+			break;
+		}
+		curl_close($curl);
+	}
+	*/
+
     if ($b==1) {
         $picurl ='https://jp.netcdn.space/digital/video/';
+        $picurl2 ='https://pics.dmm.co.jp/mono/movie/adult/';
+        $baseurl ='jp.netcdn.space';
     }elseif ($b==2){
         $picurl ="https://pics.dmm.co.jp/digital/video/";
-        //$picurl ="";
-    } ?>
+        $picurl2 ="https://pics.dmm.co.jp/mono/movie/adult/";
+        $baseurl ='pics.dmm.co.jp';
+    }elseif ($b==3){
+        $picurl ='https://pics.vpdmm.cc/digital/video/';
+        $picurl2 ='https://pics.vpdmm.cc/mono/movie/adult/';
+        $baseurl ='pics.vpdmm.cc';
+    }elseif ($b==4){
+        $picurl ='http://utry320.synology.me:5080/digital/video/';
+        $picurl2 ='https://jp.netcdn.space/mono/movie/adult/';
+        $baseurl ='utry320.synology.me:5080';
+    } 
+
+    $picurl = 'https://'.$baseurl.'/digital/video/';
+    $picurl2 ='https://'.$baseurl.'/mono/movie/adult/';
+    
+    ?>
     {{--<h3 >
 
 
     </h3>--}}
-        @include('itemtag', ['movie_info' => $movie_info])
-        <?php $sh = '';if ($movie_info['owned'] == 1){ $sh = '<a class="btn btn-mini-new btn-danger disabled  "  >已拥有</a>'; }  echo $sh .mb_substr( $movie_info['movie_title'], 0, 70) ?>
+   
+    @include('itemtag', ['movie_info' => $movie_info])
+	
+    <?php 
+    	$sh = '';
+    	if ($movie_info['owned'] == 1) {
+			$sh = '<a class="btn btn-mini-new btn-danger disabled  "  >已擁有</a>'; 
+		} 
+		echo $sh;
+	?>
+	<h3 >
+	<?php 
+		echo mb_substr( $movie_info['movie_title'], 0, 500) ;
+	?>
+    </h3>
+    <span id="edit-submit-show" style="cursor: pointer;" class="glyphicon glyphicon-cog"></span>
+<!--
+<style>
+	body {
+		background:url("{{$picurl.$movie_info['movie_pic_cover']}}") no-repeat center center;
+		background-size:cover;
+		background-attachment:fixed;
+		background-color: #ff00004d;
+		
+	}
+</style>
+-->
+<script>
+/*
+window.onload=function(){
+	document.body.setAttribute('background','{{$picurl.$movie_info['movie_pic_cover']}}'); 
+	}
+	*/
+function CopyReName() {
+	document.getElementById("film_rename").select();  
+	document.execCommand('copy');
+	//window.alert("複製完成");
+	//window.prompt("sometext","defaultText");
+};
+function CopyNumber() {
+	const film_number=document.createElement('input');
+	document.body.appendChild(film_number);
+	film_number.value='{{$movie_info['censored_id']}}'
+	film_number.select(); 
+	document.execCommand('copy');
+	document.body.removeChild(film_number);
+};
+
+function CheckImageExists() {
+	var picurl = "";
+	var logs = "";
+	var urllist = [
+		'jp.netcdn.space',
+		'pics.dmm.co.jp',
+		'pics.vpdmm.cc',
+		'utry320.synology.me:5080'
+		];
+	/*var http = new XMLHttpRequest();*/
+	for (var url = 0; url < urllist.length; url++) {
+	
+		picurl = 'https://' + urllist[url] + '/digital/video/' + "{{$movie_info['movie_pic_cover']}}";;
+		$.get(picurl).done(
+			function() {logs += picurl + 'ok \n';}
+		).fail(
+			function() {logs += picurl + 'fail \n';}
+			);
+	};
+	alert(logs);
+};
+
+window.onload=function(){
+	//document.body.setAttribute('background','{{$picurl.$movie_info['movie_pic_cover']}}');
+	//CheckImageExists();
+	
+	}
+</script>
+	<div id="show_rename_div" style="display: table;display: none;">
+		<div class="input-group">
+			<span class="input-group-btn">
+		    <button type="button" class="btn btn-default" onclick="CopyReName()">Copy</button>
+		    </span>
+		    <input type="text" id="film_rename" class="form-control" rows="1" value="<?php 
+		    		echo $movie_info['movie_title']." - ";
+		    		foreach($res_star as $key=>$val):
+						echo $val['star_name'];
+						if (next($res_star)==true) echo ',';
+					endforeach; 
+					echo " - ";
+					echo $movie_info['release_date'] ;
+		    	?>">
+	    </div>
+    </div>
     <div class="row movie"><!-- https://pics.javbus.info/sample/5rvz_11.jpg   https://jp.netcdn.space/ https://pics.dmm.co.jp/digital/video/ipz00865/ipz00865jp-12.jpg-->
         <div class="col-md-9 screencap">
+        
+        					<?php 
+        					if (file_exists("digital/video/".$movie_info['movie_pic_cover'])): 
+								$picurl = "digital/video/";
+							endif; 
+							?>
+							
             <a class="bigImage" href="<?php echo $picurl.$movie_info['movie_pic_cover'] ?>" >
-                <img class = "bigImagesrc" src="<?php echo $picurl.$movie_info['movie_pic_cover'] ?>"
+                <img id="img_pic_cover" class = "bigImagesrc img-rounded" src="<?php echo $picurl.$movie_info['movie_pic_cover'] ?>"
 
                 ></a>
-            <!-- onerror="this.src='avbook/cheshen.jpg'"
-
-<a title="上一个识别码 {{$last_censored_id}}" href="movie?censored_id={{$last_censored_id}}"><span class="glyphicon glyphicon-chevron-left"></span>=== </a><a
-                title="下一个识别码 {{$next_censored_id}}" href="movie?censored_id={{$next_censored_id}}"> ===<span  style = "height:20px" class="glyphicon glyphicon-chevron-right" ></span></a>
-
-            <span title="收藏" value="" class="mypointer favicon" style="color:#777; font-size: 18px;"><span class="glyphicon glyphicon-heart-empty"></span></span>
-            -->
+		@if ($movie_info['movie_desc'])
+        <h4 class="header">
+        <span style="color:#333333;"><?php echo $movie_info['movie_desc'] ?></span>
+		</h4>
+		@endif
+		<div id="edit-desc">
+		<textarea type="text" class="form-control" rows="3" id="edit-desc-data"><?php echo $movie_info['movie_desc'] ?></textarea>
+		<button type="button" class="btn btn-mini-new btn-default" onclick="change_info('movie_desc',document.getElementById('edit-desc-data').value,this);" >保存</button>
+		</div>
+		
         </div>
         <div class="col-md-3 info">
 
-            <p><span class="header">识别码:</span><a href="{{url()->full()}}"><span style="color:#CC0000;"><?php echo $movie_info['censored_id'] ?></span></a>
-
-            </p>
             <p>
-                <a title="上一个识别码 {{$last_censored_id}}" href="movie?censored_id={{$last_censored_id}}"><span class="glyphicon glyphicon-chevron-left"></span>上一页 |</a><a
-                        title="下一个识别码 {{$next_censored_id}}" href="movie?censored_id={{$next_censored_id}}"> 下一页<span  style = "height:20px" class="glyphicon glyphicon-chevron-right" ></span></a> <a  href = '' title="//游标分页 wait to do " > </a>
+            <span class="header">番號:</span>
+            <?php $str=$movie_info['censored_id'];?>
+            <a href="censored?&search=<?php echo explode('-', $str)[0] ?>"><span style="color:#33AAFF;"><?php echo explode('-', $str)[0]?></span></a><?php $str=$movie_info['censored_id']; echo '-'.explode('-', $str)[1]?> <button type="button" class="btn btn-default btn-xs" onclick="CopyNumber()">Copy</button></p>
+            
+            <p>
+                <a title="上一個番號 {{$last_censored_id}}" href="movie?censored_id={{$last_censored_id}}"><span class="glyphicon glyphicon-chevron-left"></span>上一頁 |</a><a
+                        title="下一個番號 {{$next_censored_id}}" href="movie?censored_id={{$next_censored_id}}"> 下一頁<span  style = "height:20px" class="glyphicon glyphicon-chevron-right" ></span></a> <a  href = '' title="//游标分页 wait to do " > </a>
                 &nbsp;&nbsp;&nbsp;<a id = "a_img" class='blogjavimg' href = ''  ></a>
             </p>
             <p>
                 <a></a>
             </p>
 
-            <p><span class="header">磁力搜索:</span><a target="_blank"  href="{{$url_config['btsourl']}}<?php echo $movie_info['censored_id'] ?>"> <span style="color:#CC0000;"><?php echo $movie_info['censored_id'] ?></span></a></p>
+            <span class="header">磁力搜索:</span>
+            <p>
+            	<a target="_blank"  href="http://clm2.net/search?word=<?php echo ($movie_info['censored_id']) ?>&sort=length"> <span class="btn btn-mini-new btn-primary">磁力猫</span></a>
+            	<a target="_blank"  href="http://so.1inu.online/go_7.php?s=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">磁力狗</span></a>
+            	<a target="_blank"  href="http://so.1inu.online/go_6.php?s=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">磁力狗</span></a>
+            	<a target="_blank"  href="https://btsow.beauty/search/<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">btsow</span></a>
+            </p>
 
-            <p><span class="header">javbus:</span><a target="_blank"  href="https://{{$url_config['javbushost']}}/<?php echo $movie_info['censored_id'] ?>"> <span style="color:#CC0000;"><?php echo $movie_info['censored_id'] ?></span></a></p>
-
-
-            <p><span class="header">avmoo:</span><a target="_blank"  href="https://{{$url_config['avmoohost']}}/cn/movie/<?php echo $movie_info['code_36'] ?>"> <span style="color:#CC0000;"><?php echo $movie_info['censored_id'] ?></span></a></p>
-
-            <p><span class="header">javlibrary:</span>
-                <a target="_blank"  href="http://{{$url_config['javlibhost']}}/cn/<?php echo ( $movie_info['javlib']['code_36'] ? '?v='.$movie_info['javlib']['code_36'] : 'vl_searchbyid.php?keyword='.$movie_info['censored_id']) ?>"> <span style=" "><?php echo $movie_info['censored_id'] ."({$movie_info['javlib']['usersowned']})({$movie_info['javlib']['userswanted']})({$movie_info['javlib']['userswatched']})" ?></span></a></p>
-
+            <span class="header">訊息網站</span>
+            <p>
+	            <a target="_blank"  href="https://{{$url_config['javbushost']}}/<?php echo $movie_info['censored_id'] ?>"> <span class="btn btn-mini-new btn-primary">JavBUS</span></a>
+	            <a target="_blank"  href="https://{{$url_config['avmoohost']}}/ja/movie/<?php echo $movie_info['code_36'] ?>"> <span class="btn btn-mini-new btn-primary">AVMoo</span></a>
+	            <a target="_blank"  href="https://{{$url_config['javlibhost']}}/ja/vl_searchbyid.php?keyword=<?php echo $movie_info['censored_id'] ?>"> <span class="btn btn-mini-new btn-primary">JavLibrary</span></a>
+            	<a target="_blank"  href="https://javdb.com/search?q=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">JavDB</span></a>
+            	<a target="_blank"  href="https://ggjav.com/main/search?string=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">GGJav</span></a>
+            	<a target="_blank"  href="https://jav.land/tw/id_search.php?keys=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">Jav.Land</span></a>
+            	<a target="_blank"  href="https://www.airav.wiki/?search=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">AirAV.Wiki</span></a>
+            </p>
+			<span class="header">下載網站</span>
+            <p>
+            <a target="_blank"  href="https://hpjav.tv/ja?s=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">HPJAV</span></a>
+            <a target="_blank"  href="https://netflav.com/search?keyword=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">Netflav</span></a>
+            
+            <a target="_blank"  href="https://{{$url_config['7mmtvhost']}}/zh/censored_search/all/<?php echo ($movie_info['censored_id']) ?>/1.html"> <span class="btn btn-mini-new btn-primary">7mmTV</span></a>
+            <a target="_blank"  href="https://missav.com/search/<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">MissAV</span></a>
+            <a target="_blank"  href="https://javfull.net/search/<?php echo ($movie_info['censored_id']) ?>/"> <span class="btn btn-mini-new btn-primary">JavFull</span></a>
+            <a target="_blank"  href="https://www.buzzav.com/search/videos/<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">BuzzAV</span></a>
+            <a target="_blank"  href="https://javdisk.com/search/movie/<?php echo ($movie_info['censored_id']) ?>.html"> <span class="btn btn-mini-new btn-primary">JavDisk</span></a>
+            <a target="_blank"  href="https://javhd.icu/?s=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">JavHD.ICU</span></a>
+            <a target="_blank"  href="https://javleak.com/?s=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">JavLeak</span></a>
+            <a target="_blank"  href="https://javhay.net/?s=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">JavHay</span></a>
+            <a target="_blank"  href="https://oxlife.co/search/index?keyword=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">XOLife</span></a>
+            <a target="_blank"  href="https://spankbang.com/s/<?php echo ($movie_info['censored_id']) ?>/?q=fhd&d=40"> <span class="btn btn-mini-new btn-primary">SpankBang</span></a>
+            <a target="_blank"  href="https://freejavbt.com/search?wd=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">freejavbt</span></a>
+            <a target="_blank"  href="https://jav.place/ja/magnet/index?q=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">jav.place</span></a>
+            <a target="_blank"  href="https://18mag.net/search?q=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">18mag</span></a>
+            
+            </p>
+			<!--
+				<input class="btn btn-primary" type="button" value="btn-primary" /><br />
+				<input class="btn btn-warning" type="button" value="btn-warning" /><br />
+				<input class="btn btn-success" type="button" value="btn-success" /><br />
+				<input class="btn btn-info" type="button" value="btn-info" /><br />
+				<input class="btn btn-danger" type="button" value="btn-danger" /><br />
+				<input class="btn btn-default" type="button" value="btn-default" /><br />
+			-->
             <!--   //cc3001.dmm.co.jp/litevideo/freepv/o/ofj/ofje00070/ofje00070_dmb_w.mp4
             //cc3001.dmm.co.jp/litevideo/freepv/n/n_1/n_1010gihhd067/n_1010gihhd067_dmb_w.mp4
 http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
 -->
-            <p><span class="header">预告片:</span>
+            <p><span class="header">預告片:</span>
 
 
                 <a target="_blank"  href="https://cc3001.dmm.co.jp/litevideo/freepv/<?php
@@ -132,33 +317,70 @@ http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
                     $pic_video = "$pic_video/{$pic_video}pl.jpg";
                 }
                 $pic_video = substr($pic_video,0,1)."/".substr($pic_video,0,3)."/".str_replace('pl.jpg','_dmb_w.mp4',$pic_video);
-                echo  $pic_video ?>"> <span  ><?php
+                echo  $pic_video ?>"> <span style="color:#CC0000;"><?php
                         echo str_replace('_dmb_w.mp4','',basename($pic_video))    ?></span></a>
 
-                <a target="_blank"  href="https://cc3001.dmm.co.jp/litevideo/freepv/<?php
-                $pic_video = $movie_info['javlib']['movie_pic_cover'];
-                $pic_video = substr($pic_video,0,1)."/".substr($pic_video,0,3)."/".str_replace('pl.jpg','_dmb_w.mp4',$pic_video);
-                echo  $pic_video ?>"> <span  ><?php
-                        echo str_replace('_dmb_w.mp4','',basename($pic_video))    ?></span></a>
             </p>
 
 
             @if ($movie_info['release_date'])
-                <span class="header">发行时间:</span><?php echo $movie_info['release_date'] ?>
+				<p>
+	                <span class="header">發行時間: </span>
+	                <span style="color:#CC0000;"><?php echo $movie_info['release_date'] ?></span>
+				</p>
+				<!--
+				<p>
+					<span id="" style="cursor: pointer;" class="glyphicon glyphicon-cog"></span>
+	                <span class="header">发行时间: </span>
+	                <span style="color:#CC0000;"><?php echo $movie_info['release_date'] ?></span>
+	                <span id="" class="glyphicon glyphicon-ok" style="cursor: pointer;"></span>
+	                <span id="" class="glyphicon glyphicon-remove" style="cursor: pointer;"></span>
+				</p>
+				-->
             @endif
-                @if ( $movie_info['movie_length'])
-                    <span class="header">长度:</span><?php echo $movie_info['movie_length'] ?>分钟</p>
-                @endif
+            @if ( $movie_info['movie_length'])
+                <p>
+					<span class="header">長度: </span>
+					<span style="color:#CC0000;"><?php echo $movie_info['movie_length'] ?></span> 分钟
+                </p>
+            @endif
             </p>
             @if ($movie_info['Director'])
-                <p><span class="header">导演:</span> <a href="censored?director=<?php echo $movie_info['Director'] ?>"><?php echo $movie_info['director_name']['director_name'] ?></a></p>
+                <p>
+                <span class="header">導演: </span> 
+	                <a href="censored?director=<?php echo $movie_info['Director'] ?>">
+	                	<span style="color:#CC0000;"><?php echo $movie_info['director_name']['director_name'] ?></span>
+	                </a>
+                <div id="edit-director" class="" >
+					<div class="input-group"><input type="text" class="form-control" id="edit-director-data"></div>
+					<button type="button" class="btn btn-mini-new btn-default" onclick="checktxt()" data-toggle="modal" data-target="#magneturlpost">保存</button>
+				</div>
+				</p>
             @endif
 
             @if ($movie_info['Studio'])
-                <p><span class="header">制作商: </span><a href="censored?Studio=<?php echo $movie_info['Studio'] ?>"><?php echo $movie_info['studio_name']['studio_name'] ?></a></p>
+                <p>
+                <span class="header">製作商: </span>
+                <a href="censored?Studio=<?php echo $movie_info['Studio'] ?>">
+                	<span style="color:#CC0000;"><?php echo $movie_info['studio_name']['studio_name'] ?></span>
+                </a>
+                <div id="edit-studio" class="" >
+					<div class="input-group"><input type="text" class="form-control" id="edit-studio-data">
+					<button type="button" class="btn btn-mini-new btn-default" onclick="checktxt()" data-toggle="modal" data-target="#magneturlpost">保存</button></div>
+				</div>
+				</p>
             @endif
             @if ($movie_info['Label'])
-                <p><span class="header">发行商: </span><a href="censored?Label=<?php echo $movie_info['Label'] ?>"><?php echo $movie_info['label_name']['label_name'] ?></a></p>
+                <p>
+                <span class="header">發行商: </span>
+                <a href="censored?Label=<?php echo $movie_info['Label'] ?>">
+                	<span style="color:#CC0000;"><?php echo $movie_info['label_name']['label_name'] ?></span>
+                </a>
+                <div id="edit-label" class="" >
+					<div class="input-group"><input type="text" class="form-control" id="edit-label-data"></div>
+					<button type="button" class="btn btn-mini-new btn-default" onclick="checktxt()" data-toggle="modal" data-target="#magneturlpost">保存</button>
+				</div>
+				</p>
             @endif
 
             @if ($movie_info['Series'])
@@ -167,22 +389,35 @@ http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
                         color:#ff9918;
                     }
                 </style>
-                <p><span class="header sphfont "  >系列:</span><a target="_blank" href="censored?Series=<?php echo $movie_info['Series'] ?>"><?php echo $movie_info['series_name']['series_name'] ?></a></p>
+                <p>
+                <span class="header sphfont "  >系列:</span>
+                <a target="_blank" href="censored?Series=<?php echo $movie_info['Series'] ?>"><?php echo $movie_info['series_name']['series_name'] ?>
+                </a>
+                <div id="edit-series" class="" >
+					<div class="input-group"><input type="text" class="form-control" id="edit-series-data"></div>
+					<button type="button" class="btn btn-mini-new btn-default" onclick="checktxt()" data-toggle="modal" data-target="#magneturlpost">保存</button>
+				</div>
+				</p>
             @endif
 
             <p>
-                <span class="header">类别: </span>
+                <span class="header">類別: </span>
                 <?php $genre_map =[];//unset($genre_config[$val['genre_code']]); ?>
+                <?php $genre_config =[];//unset($genre_config[$val['genre_code']]); ?>
 
                     <?php  foreach($res_genre as $key=>$val): ?>
-                    <span class="genre"><a datagenre= "{{$val['genre_code']}}"  href="censored?gc[]=<?php echo $val['genre_code'] ?>&mg=1&ltitle[]={{$val['genre_dsce']}}"><?php echo $val['genre_dsce'] ?></a></span>
-                    <?php  $genre_map[$val['genre_code'].'_'] = 1; ?>
+                    <span class="genre">
+	                    <a datagenre= "{{$val['genre_code']}}"  href="censored?gc[]=<?php echo $val['genre_code'] ?>&ltitle[]={{$val['genre_dsce']}}&orderby=release_date">
+	                    	<span style="color:#CC0000;"><?php echo $val['genre_dsce'] ?></span>
+	                    </a>
+                    </span>
+                    <?php  $genre_map[$val['genre_code']] = $val['genre_dsce']; ?>
                     <?php endforeach; ?>
             </p>
             <p>
-                <span class="header">修改类别:</span>
-                <?php  foreach($genre_config as $key=>$val): ?>
-                    <a class="btn btn-mini-new   <?php if(isset($genre_map[$key.'_'])){
+                <span class="header">更改類別:</span>
+                <?php  foreach($genre_map as $key=>$val): ?>
+                    <a class="btn btn-mini-new   <?php if(isset($genre_map[$key])){
                         echo 'btn-warning" title = "删除类别：'.$val." $key" ;
                     }else{
                         echo 'btn-default" title = "添加类别：'.$val." $key" ;
@@ -198,8 +433,19 @@ http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
             </p>
 
             <p>
-                <span class="header">修改状态:</span>
-                <?php $state_config =['wanted'=>['想要的','(没有资源 有资源无法下载)'],'watched'=>['已看过',''],'owned'=>['已拥有',''] ]; foreach($state_config as $key=>$val): ?>
+                <span class="header">更改狀態:</span>
+                <!--<p><a class="btn btn-mini-new btn-default" title = "無字幕水印OK"
+                   onclick="change_state('no_watermark','1',this);change_state('no_subtitles','1',this)" >無字幕水印OK</a></p>-->
+                <?php $state_config =
+                [
+                    'no_watermark'  => ['影片無浮水印',''],
+                    'no_subtitles'  => ['影片無字幕',''],
+                    'censored_leak' => ['無碼流出',''],
+                    'needupdate' => ['等待更新',''],
+                    'owned'         => ['已拥有',''] 
+                ]; 
+                foreach($state_config as $key=>$val): ?>
+
                 <a class="btn btn-mini-new btncl-{{$key}}  <?php
                         //没有高清资源 有高清资源无法下载
 
@@ -224,7 +470,8 @@ http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
 
             <p class="star-show">
                 <span class="header" style="cursor: pointer;">演員</span>:
-                <span id="star-toggle" class="glyphicon glyphicon-plus" style="cursor: pointer;"></span>
+                <!--<span id="star-toggle" class="glyphicon glyphicon-plus" style="cursor: pointer;"></span>-->
+                <span id="star-toggle" class="glyphicon glyphicon-minus" style="cursor: pointer;"></span>
             </p>
 
             <ul>
@@ -233,9 +480,14 @@ http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
                 <?php  foreach($res_star as $key=>$val): ?>
                 <div id="star_<?php echo $val['code_36'] ?>" class="star-box star-box-common star-box-up idol-box" style="left: 1047px; top: 326px; position: fixed; display: none;">
                     <li>
-                        <a href="censored?st=<?php echo $val['code_36'] ?>"><img dsrc="https://jp.netcdn.space/mono/actjpgs/<?php echo $val['star_pic'] ?>"
-                                                                                      src = 'https://pics.javcdn.pw/actress/{{$val['code_36']}}_a.jpg' title=""></a>
-                        <div class="star-name"><a href="censored?st=<?php echo $val['code_36'] ?>&mg=1&ltitle[]={{$val['star_name']}}" title="<?php echo $val['star_name'] ?>"><?php echo $val['star_name'] ?></a></div>
+                        <a href="censored?st=<?php echo $val['code_36'] ?>">
+						<?php if (!file_exists("mono/actjpgs/".$val['star_pic'])): ?>
+							<img dsrc="https://<?php echo $baseurl ?>/mono/actjpgs/<?php echo $val['star_pic'] ?>" src="https://<?php echo $baseurl ?>/mono/actjpgs/<?php echo $val['star_pic'] ?>" title="<?php echo $val['star_name'] ?>">
+						<?php else :?>
+							<img src="mono/actjpgs/<?php echo $val['star_pic'] ?>" title="<?php echo $val['star_name'] ?>">
+						<?php endif ?>
+						</a>
+                        <div class="star-name"><a href="censored?st=<?php echo $val['code_36'] ?>&ltitle[]={{$val['star_name']}}&orderby=release_date" title="<?php echo $val['star_name'] ?>"><?php echo $val['star_name'] ?></a></div>
 
                     </li>
                 </div>
@@ -249,7 +501,7 @@ http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
             <p>
                 <?php  foreach($res_star as $key=>$val): ?>
                 <span class="genre" onmouseover="hoverdiv(event,'star_<?php echo $val['code_36'] ?>')" onmouseout="hoverdiv(event,'star_<?php echo $val['code_36'] ?>')">
-					<a href="censored?st=<?php echo $val['code_36'] ?>&mg=1&ltitle[]={{$val['star_name']}}"><?php echo $val['star_name'] ?></a>
+					<a href="censored?st=<?php echo $val['code_36'] ?>&ltitle[]={{$val['star_name']}}&orderby=release_date"><?php echo $val['star_name'] ?></a>
 				</span>
                 <?php endforeach; ?>
             </p>
@@ -259,9 +511,44 @@ http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
         </div>
     </div>
 
-    {{--<h4>樣品圖像</h4>--}}
+   
+    <div id="star-div">
+        <h4 id="star-hide" style="cursor: pointer;">演員 <span class="glyphicon glyphicon-minus"></span></h4>
+        <div id="avatar-waterfall">
+            <?php  foreach($res_star as $key=>$val): ?>
+            <a class="avatar-box" href="censored?st=<?php echo $val['code_36'] ?>">
+	    		<div class="photo-frame">
+					<?php if (!file_exists("mono/actjpgs/".$val['star_pic'])): ?>
+						<img src="https://<?php echo $baseurl ?>/mono/actjpgs/<?php echo $val['star_pic'] ?>" title="<?php echo $val['star_name'] ?>">
+					<?php else :?>
+						<img src="mono/actjpgs/<?php echo $val['star_pic'] ?>" title="<?php echo $val['star_name'] ?>">
+					<?php endif; ?>
+	            </div>
+	            <?php if (!file_exists("mono/actjpgs/".$val['star_pic'])): ?>
+                <span><?php echo $val['star_name'] ?></span>
+                <?php else :?>
+                <span style="color:#42b4e094;"><?php echo $val['star_name'] ?></span>
+                <?php endif; ?>
+            </a>
+            <?php endforeach; ?>
+
+        </div>
+
+    </div>
+    	
 
 
+	<div id="edit-sample-dmm">
+	
+    <h4 class="header">
+    <span style="color:#333333;">截圖數量: <?php echo $movie_info['sample_dmm'] ?></span>
+	</h4>
+	
+	<input type="text" class="form-control" rows="1" id="edit-sample-dmm-data" value="<?php echo $movie_info['sample_dmm'] ?>">
+	<button type="button" class="btn btn-mini-new btn-default" onclick="change_info('sample_dmm',document.getElementById('edit-sample-dmm-data').value,this);" >保存</button>
+	</div>
+	
+	{{--<h4>樣品圖像</h4>--}}
     <div id="sample-waterfall">
         <?php
         // var_dump(strrpos('digital', $movie_info['sample_dmm']));die;
@@ -273,7 +560,7 @@ http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
         $heade=str_replace('digital/', '', str_replace('pl.jpg', '', $movie_info['movie_pic_cover']));
         $m= '';
         if ($movie_info['sample_dmm']==0) {
-            for ($i = 0; $i < 21; $i++) {
+            for ($i = 0; $i < 31; $i++) {
                 $a=$heade.'jp-'.$i.'.jpg';
                 $m =$m."|".$a;
             }
@@ -289,7 +576,7 @@ http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
 
         foreach($arr as $key=>$val): ?>
         <?php  if($val):?>
-        <a class="sample-box" href="<?php echo $picurl.$val ?>" title="<?php echo $movie_info['movie_title'] ?> - 样品图像 -- 1">
+        <a class="sample-box" href="<?php echo $picurl.$val ?>" title="<?php echo $val ?>">
             <div class="photo-frame">
                 <img  class="sample-img-load"  src="<?php echo $picurl.str_replace('jp-', '-', $val)?>"
 
@@ -393,25 +680,7 @@ http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
                 <a href="" class="btn btn-lg btn-warning btn-block" target="_blank" rel="nofollow"><span class="glyphicon glyphicon-save"></span> 下載觀看</a>
             </div>
         </div>
-
-
-        <div id="star-div">
-            <h4 id="star-hide" style="cursor: pointer;">演員 <span class="glyphicon glyphicon-minus"></span></h4>
-            <div id="avatar-waterfall">
-                <?php  foreach($res_star as $key=>$val): ?>
-                <a class="avatar-box" href="censored?st=<?php echo $val['code_36'] ?>">
-                    <div class="photo-frame">
-                        <img src="<?php echo str_replace("/digital/video",'',$picurl).'/mono/actjpgs/'.$val['star_pic'] ?>"  dsrc = 'https://pics.javcdn.pw/actress/{{$val['code_36']}}_a.jpg'  title="">
-                    </div>
-                    <span><?php echo $val['star_name'] ?></span>
-                </a>
-                <?php endforeach; ?>
-
-            </div>
-
-        </div>
-
-
+        
         <div class="clearfix"></div>
 
 
@@ -489,7 +758,30 @@ http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
                     }
                 });
             };
-
+			
+            function change_info(key,value,objs){
+                var t = "/api/change_info?key="+key+"&value="+value  +"&code_36="+code_36  ;
+                var obj = $(objs);
+                $.ajax({
+                    url: t,
+                    type: "GET",
+                    success: function(res) {
+                         ShowMsg(res.msg);
+                        if (!objs)
+                            return
+                        //location.reload()
+                        if(res.code==0){
+                            obj.removeClass('btn-success')
+                            obj.addClass('btn-default')
+                        }else{
+                            obj.removeClass('btn-default')
+                            obj.addClass('btn-success')
+                        }
+						location.reload()
+                    }
+                });
+            };
+			
             (function($){
                 $('.bigImage').magnificPopup({
                     type: 'image',
@@ -500,7 +792,8 @@ http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
                     image: {
                         verticalFit: true,
                         titleSrc: function(item) {
-                            return 'fg';
+                            //return 'fg';
+							return '<?php  echo $movie_info['movie_title']  ?>';
                         }
                     },
                     zoom: {

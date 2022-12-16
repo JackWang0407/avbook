@@ -35,9 +35,24 @@ class MovieinfoController extends Controller
 
         return $res;
     }
+    public function change_info(Request $request)
+    {
+        if (empty($request->code_36 || $request->key)) {
+            $res['code'] = 0;
+            $res['msg'] = 'code_36 needed' ;
+            return $res;
+        }
+        $data = array( $request->key =>  $request->value );//!生产环境应过滤字段 but...
+        $r = Avbooks::where('code_36',$request->code_36)->update($data);
+
+        $res['code'] = $request->value>0?1:0;
+        $res['msg'] = "{$request->key} 更新成功：".$r;
+
+        return $res;
+    }
     public function magnetlinks(Request $request)
     {
-        $cf =\App\Tools\CrawlerUpdate::get_crawler_config();
+        //$cf =\App\Tools\CrawlerUpdate::get_crawler_config();
 
         if(!$request->gid){
             \Artisan::call("avbook:javbus  --movieid={$request->censored_id}");

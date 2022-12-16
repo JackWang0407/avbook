@@ -19,13 +19,16 @@ class AvbookController extends Controller
             'Series' => 'Series',
             'Label' => 'Label',
             'Studio' => 'Studio',
-            'director' => 'director','wanted' => 'wanted'
+            'director' => 'director',
+            'cl' => 'censored_leak',
+            'needupdate' => 'needupdate',
+            'wanted' => 'wanted'
         ];
         $table_key = ['movie_title','movie_pic_cover','censored_id',
             'have_file','have_mg','have_sub','have_hd','owned','favorite','wanted','watched',
-            'Genre','code_36','release_date'];
+            'Genre','code_36','release_date','have_fhd','no_watermark','no_subtitles','censored_leak','bps'];
         $title = '';
-        $orderby = "magnet_date";
+        $orderby = "release_date";
         $where_books = [];
         $page_info = [];
 
@@ -38,7 +41,12 @@ class AvbookController extends Controller
         if($request->mg=='1'){
             $where_books[] =['have_mg','1'];
         }elseif($request->mg==='0'){
-            $orderby = 'code_10';
+            $orderby = 'release_date';
+        }
+        if($request->fhd=='1'){
+            $where_books[] =['have_fhd','1'];
+        }elseif($request->fhd==='0'){
+            $orderby = 'release_date';
         }
         if($request->ltitle){
             $request->ltitle = array_unique($request->ltitle);
@@ -101,6 +109,12 @@ class AvbookController extends Controller
         if($request->orderby){
             $orderby = $request->orderby;
         }
+        if($request->minbps){
+            $where_books[] =['bps','<',$request->minbps];
+        }
+		if($request->maxbps){
+            $where_books[] =['bps','>',$request->maxbps];
+        }
         $idkeyk= [];
         if($request->search){
             $pt= '搜索:'.$request->search;
@@ -122,13 +136,14 @@ class AvbookController extends Controller
         }
 
         if(!empty($where_books)){
-            $Avbooks = Avbooks::select($table_key)->where($where_books)->orderBy($orderby, 'desc')->orderBy('code_10', 'desc')->paginate(config('avbook.cen_per_page'));
+            $Avbooks = Avbooks::select($table_key)->where($where_books)->orderBy($orderby, 'desc')->orderBy('censored_id', 'desc')->paginate(config('avbook.cen_per_page'));
             //return $Avbooks;
         }else{
             if(empty($idkeyk)){
-                $Avbooks = Avbooks::select($table_key)->orderBy($orderby, 'desc')->orderBy('code_10', 'desc')->paginate(config('avbook.cen_per_page'));
+                //$Avbooks = Avbooks::select($table_key)->orderBy($orderby, 'desc')->orderBy('censored_id', 'desc')->paginate(config('avbook.cen_per_page'));
+                $Avbooks = Avbooks::select($table_key)->orderBy($orderby, 'desc')->orderBy('release_date', 'desc')->orderBy('censored_id', 'desc')->paginate(config('avbook.cen_per_page'));
             }else{
-                $Avbooks = Avbooks::select($table_key)->whereIn('censored_id', $idkeyk)->orderBy('code_10', 'desc')->paginate(config('avbook.cen_per_page'));
+                $Avbooks = Avbooks::select($table_key)->whereIn('censored_id', $idkeyk)->orderBy('censored_id', 'desc')->paginate(config('avbook.cen_per_page'));
                 if ($Avbooks->count()==1){
                     Header("Location: ".url('/movie?censored_id='.$Avbooks->first()->censored_id));
                 }
@@ -247,13 +262,13 @@ class AvbookController extends Controller
 //        }
 
         if(!empty($where_books)){
-            $Avbooks = Avbooks::select($table_key)->where($where_books)->orderBy($orderby, 'desc')->orderBy('code_10', 'desc')->paginate(config('avbook.cen_per_page'));
+            $Avbooks = Avbooks::select($table_key)->where($where_books)->orderBy($orderby, 'desc')->orderBy('release_date', 'desc')->paginate(config('avbook.cen_per_page'));
             //return $Avbooks;
         }else{
             if(empty($idkeyk)){
                 $Avbooks = Javlibrary::orderBy('usersowned', 'desc')->orderBy('userswanted', 'desc')->orderBy('userswatched', 'desc')->orderBy('release_date', 'desc')->paginate(config('avbook.cen_per_page'));
             }else{
-                $Avbooks = Avbooks::select($table_key)->whereIn('censored_id', $idkeyk)->orderBy('code_10', 'desc')->paginate(config('avbook.cen_per_page'));
+                $Avbooks = Avbooks::select($table_key)->whereIn('censored_id', $idkeyk)->orderBy('release_date', 'desc')->paginate(config('avbook.cen_per_page'));
                 if ($Avbooks->count()==1){
                     Header("Location: ".url('/movie?censored_id='.$Avbooks->first()->censored_id));
                 }
@@ -292,7 +307,7 @@ class AvbookController extends Controller
         if($request->id){
             $movie_info= Javlibrary::where('code_36',$request->id)->first();
         }else{
-            $movie_info= Movies::where('censored_id',$censored_id)->orderBy('code_10', 'desc')->first();
+            $movie_info= Movies::where('censored_id',$censored_id)->orderBy('release_date', 'desc')->first();
         }
         if (empty($movie_info)) {
             die($censored_id  ."==not find <a href = '/movie?censored_id={$data['last_censored_id']}'><=== </a> || <a href = '/movie?censored_id={$data['next_censored_id']}'>===> </a>");
@@ -362,7 +377,7 @@ class AvbookController extends Controller
         if($request->id){
             $movie_info= Movies::where('code_36',$request->id)->first();
         }else{
-            $movie_info= Movies::where('censored_id',$censored_id)->orderBy('code_10', 'desc')->first();
+            $movie_info= Movies::where('censored_id',$censored_id)->orderBy('release_date', 'desc')->first();
         }
         if (empty($movie_info)) {
             die($censored_id  ."==not find <a href = '/movie?censored_id={$data['last_censored_id']}'><=== </a> || <a href = '/movie?censored_id={$data['next_censored_id']}'>===> </a>");
@@ -413,7 +428,9 @@ class AvbookController extends Controller
 
     public function actresses(Request $request)
     {
-        $data['actresses']= Actresses::orderBy('file_num', 'desc')->paginate(30);
+        //$data['actresses']= Actresses::orderBy('file_num', 'desc')->paginate(100);
+        $data['actresses']= Actresses::orderBy('star_birthday', 'desc')->paginate(100);
+        //$data['actresses']= Actresses::orderBy('star_name', 'asc')->paginate(100);
         return view('actresses',$data);
     }
 

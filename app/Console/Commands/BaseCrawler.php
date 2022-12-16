@@ -240,7 +240,7 @@ class BaseCrawler extends Command
     public function prepare_sprequests_update($notwith404=0,$start_from=1,$refind_code_36 = 1){
         $this->arr_req_code_36 = [];
         $requrl = $this->spbase_url.'a';
-        $this->info("GET: $requrl  before sql");
+        $this->info("BASE GET: $requrl  before sql");
         $response = $this->spclient->get($requrl);
         $code = $response->getStatusCode();
         $type = $response->getHeader('content-type');

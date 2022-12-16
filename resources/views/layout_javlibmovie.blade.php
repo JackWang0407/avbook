@@ -148,11 +148,8 @@
             <p>
                 <span class="header">类别: </span>
                 <?php $genre_map =[];//unset($genre_config[$val['genre_code']]); ?>
-
-
-
                     <?php  foreach($res_genre as $key=>$val): ?>
-                    <span class="genre"><a datagenre= "{{$val['genre_code']}}"  href="censored?gc[]=<?php echo $val['genre_code'] ?>&mg=1&ltitle[]={{$val['genre_dsce']}}"><?php echo $val['genre_dsce'] ?></a></span>
+                    <span class="genre"><a datagenre= "{{$val['genre_code']}}"  href="censored?gc[]=<?php echo $val['genre_code'] ?>&ltitle[]={{$val['genre_dsce']}}"><?php echo $val['genre_dsce'] ?></a></span>
                     <?php  $genre_map[$val['genre_code'].'_'] = 1; ?>
                     <?php endforeach; ?>
             </p>
@@ -169,9 +166,6 @@
 
                        onclick="change_genre(this,'{{$key}}')" >{{$val}}</a>
                 <?php endforeach; ?>
-
-
-
             </p>
 
             <p>
@@ -218,10 +212,16 @@
                 <?php  foreach($res_star as $key=>$val): ?>
                 <div id="star_<?php echo $val['code_36'] ?>" class="star-box star-box-common star-box-up idol-box" style="left: 1047px; top: 326px; position: fixed; display: none;">
                     <li>
-                        <a href="censored?st=<?php echo $val['code_36'] ?>"><img dsrc="https://jp.netcdn.space/mono/actjpgs/<?php echo $val['star_pic'] ?>"
-                                                                                      src = 'https://pics.javcdn.pw/actress/{{$val['code_36']}}_a.jpg' title=""></a>
-                        <div class="star-name"><a href="censored?st=<?php echo $val['code_36'] ?>&mg=1&ltitle[]={{$val['star_name']}}" title="<?php echo $val['star_name'] ?>"><?php echo $val['star_name'] ?></a></div>
-
+                        <a href="censored?st=<?php echo $val['code_36'] ?>">
+                        <?php if (!file_exists("images/actjpgs/".$res_star['star_name']."/star_pic.jpg")): ?>
+                        	<img dsrc="https://jp.netcdn.space/mono/actjpgs/<?php echo $val['star_pic'] ?>" src='https://pics.javcdn.pw/actress/{{$val['code_36']}}_a.jpg' title="<?php echo $res_star['star_name'] ?>">
+                        <?php else :?>
+                        	<img class="star_pic" src="images/actjpgs/<?php echo $res_star['star_name'] ?>/star_pic.jpg" title="<?php echo $res_star['star_name'] ?>">
+                        <?php endif; ?>
+                      	</a>
+                        <div class="star-name">
+                        	<a href="censored?st=<?php echo $val['code_36'] ?>&ltitle[]={{$val['star_name']}}" title="<?php echo $val['star_name'] ?>"><?php echo $val['star_name'] ?></a>
+                        </div>
                     </li>
                 </div>
                 <?php endforeach; ?>
@@ -234,7 +234,7 @@
             <p>
                 <?php  foreach($res_star as $key=>$val): ?>
                 <span class="genre" onmouseover="hoverdiv(event,'star_<?php echo $val['code_36'] ?>')" onmouseout="hoverdiv(event,'star_<?php echo $val['code_36'] ?>')">
-					<a href="censored?st=<?php echo $val['code_36'] ?>&mg=1&ltitle[]={{$val['star_name']}}"><?php echo $val['star_name'] ?></a>
+					<a href="censored?st=<?php echo $val['code_36'] ?>&ltitle[]={{$val['star_name']}}"><?php echo $val['star_name'] ?></a>
 				</span>
                 <?php endforeach; ?>
             </p>

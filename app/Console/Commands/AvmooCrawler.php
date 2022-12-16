@@ -91,7 +91,7 @@ class AvmooCrawler extends BaseCrawler
 
         $c_36 =  empty($out[1]) ? '' : $out[1];
         $arr_data['code_36'] = $c_36;////'code_36'
-        preg_match('#<p><span class="header">识别码:</span> <span style="color:\#CC0000;">(.*?)</span></p>#', $content, $out);
+        preg_match('#<p><span class="header">番號:</span> <span style="color:\#CC0000;">(.*?)</span></p>#', $content, $out);
 
         if (empty($out[1])) {
             return  null;
@@ -103,13 +103,13 @@ class AvmooCrawler extends BaseCrawler
         preg_match('#<a class="bigImage" href="(.*?)"#', $content, $out);
         $arr_data['movie_pic_cover'] = empty($out[1]) ? '' : str_replace('https://jp.netcdn.space/digital/video/', '',$out[1]);//'movie_pic_cover'
 
-        preg_match('#<p><span class="header">发行时间:</span> (.*?)</p>#', $content, $out);
+        preg_match('#<p><span class="header">發行時間:</span> (.*?)</p>#', $content, $out);
         $arr_data['release_date'] = empty($out[1]) ? date("Y-m-d"): $out[1];//'release_date'
 
-        preg_match('#<p><span class="header">长度:</span> (.*?)分钟</p>#', $content, $out);
+        preg_match('#<p><span class="header">長度:</span> (.*?)分钟</p>#', $content, $out);
         $arr_data['movie_length'] = empty($out[1]) ? '' : $out[1];// 'movie_length'
 
-        preg_match('#<p><span class="header">导演:</span> <a href="'.$this->hosturl.'director/(.*?)">#', $content, $out);
+        preg_match('#<p><span class="header">導演:</span> <a href="'.$this->hosturl.'director/(.*?)">#', $content, $out);
         $arr_data['Director'] = empty($out[1]) ? '' : $out[1];//'Director'
 
         preg_match('#<a href="'.$this->hosturl.'studio/(.*?)">#', $content, $out);

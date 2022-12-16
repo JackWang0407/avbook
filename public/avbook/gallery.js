@@ -1,7 +1,11 @@
 $(document).ready(function() {
-    if ($.cookie("starinfo") == "glyphicon glyphicon-minus") {
+    if ($("#star-toggle").attr("class") == "glyphicon glyphicon-minus") {
         $("#star-div").show();
-    }
+    }else{
+		
+		$("#star-div").hide();
+	}
+	
     $('.star-show').click(function() {
         $("#star-toggle").toggleClass("glyphicon-minus glyphicon-plus");
         $("#star-div").slideToggle();
@@ -25,6 +29,25 @@ $(document).ready(function() {
     $('#mag-submit-hide').click(function() {
         $("#mag-submit-toggle").attr("class", "glyphicon glyphicon-plus");
         $("#mag-submit").slideToggle();
+    });
+	$('#edit-submit-show').click(function() {
+		$("#edit-desc").slideToggle();
+		$("#edit-director").slideToggle();
+        $("#edit-studio").slideToggle();
+		$("#edit-label").slideToggle();
+		$("#edit-series").slideToggle();
+		$("#edit-sample-dmm").slideToggle();
+		$("#show_rename_div").slideToggle();
+    });
+    $('#edit-submit-hide').click(function() {
+		$("#edit-desc").slideToggle();
+		$("#edit-director").slideToggle();
+        $("#edit-studio").slideToggle();
+		$("#edit-label").slideToggle();
+		$("#edit-series").slideToggle();
+		$("#edit-sample-dmm").slideToggle();
+		$("#show_rename_div").slideToggle();
+		
     });
 });
 $('#urad1').hover(function() {
@@ -73,6 +96,92 @@ function checktxt() {
         }
     });
 }
+
+function check_edit_desc_data() {
+    var appendedInput = $("#edit-desc-data").val();
+    var e = "../uncledatoolsbyajax_newmg?gid=" + gid   ;
+    $.ajax({
+        url: e,
+        data: {mgurl : appendedInput},
+        type: "GET",
+        success: function(e) {
+            window.location.href =window.location.href ;
+           // $("#magneturlpost").html(e)
+        }
+    });
+}
+
+function check_edit_sample_dmm_data() {
+    var appendedInput = $("#edit-sample-dmm-data").val();
+    var e = "../uncledatoolsbyajax_newmg?gid=" + gid   ;
+    $.ajax({
+        url: e,
+        data: {mgurl : appendedInput},
+        type: "GET",
+        success: function(e) {
+            window.location.href =window.location.href ;
+           // $("#magneturlpost").html(e)
+        }
+    });
+}
+
+
+function check_edit_director_data() {
+    var appendedInput = $("#edit-director-data").val();
+    var e = "../uncledatoolsbyajax_newmg?gid=" + gid   ;
+    $.ajax({
+        url: e,
+        data: {mgurl : appendedInput},
+        type: "GET",
+        success: function(e) {
+            window.location.href =window.location.href ;
+           // $("#magneturlpost").html(e)
+        }
+    });
+}
+
+function check_edit_studio_data() {
+    var appendedInput = $("#edit-studio-data").val();
+    var e = "../uncledatoolsbyajax_newmg?gid=" + gid   ;
+    $.ajax({
+        url: e,
+        data: {mgurl : appendedInput},
+        type: "GET",
+        success: function(e) {
+            window.location.href =window.location.href ;
+           // $("#magneturlpost").html(e)
+        }
+    });
+}
+
+function check_edit_label_data() {
+    var appendedInput = $("#edit-label-data").val();
+    var e = "../uncledatoolsbyajax_newmg?gid=" + gid   ;
+    $.ajax({
+        url: e,
+        data: {mgurl : appendedInput},
+        type: "GET",
+        success: function(e) {
+            window.location.href =window.location.href ;
+           // $("#magneturlpost").html(e)
+        }
+    });
+}
+
+function check_edit_series_data() {
+    var appendedInput = $("#edit-series-data").val();
+    var e = "../uncledatoolsbyajax_newmg?gid=" + gid   ;
+    $.ajax({
+        url: e,
+        data: {mgurl : appendedInput},
+        type: "GET",
+        success: function(e) {
+            window.location.href =window.location.href ;
+           // $("#magneturlpost").html(e)
+        }
+    });
+}
+
 function uncledatoolsbyajax(){
 	var t = "../uncledatoolsbyajax/" +gid +"/"  ;
     $.ajax({

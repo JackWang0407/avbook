@@ -323,7 +323,28 @@ echo "=======================================";
         preg_match('#<title>(.*?) - JAVLibrary</title>#', $content, $out);
         $arr_data['movie_title'] = empty($out[1]) ? '' : trim(str_replace($censored_id, '', $out[1]));////'movie_title'
         preg_match('#id="video_jacket_img" src="(.*?)"#', $content, $out);
-        $arr_data['movie_pic_cover'] = empty($out[1]) ? '' : str_replace(['http://pics.dmm.co.jp/mono/movie/adult/','//pics.dmm.co.jp/mono/movie/adult/'], '',$out[1]);//'movie_pic_cover'//替换 域名  http://pics.dmm.co.jp/
+        $arr_data['movie_pic_cover'] = empty($out[1]) ? '' : str_replace(['http://pics.dmm.co.jp/mono/movie/adult/','//pics.dmm.co.jp/mono/movie/adult/','//pics.dmm.co.jp/digital/video/','http://pics.dmm.co.jp/digital/video/'], '',$out[1]);//'movie_pic_cover'//替换 域名  http://pics.dmm.co.jp/
+
+
+		$gifsample = $out;
+		preg_match('#<img src="../img/player.gif" width="120" height="90" border="0">#', $content, $gifsample); //找到../img/player.gif
+
+		
+        //preg_match('#<img src="(.*?)" width="120" height="90" border="0">#', $content, $out); //找到../img/player.gif
+        //preg_match('#</a>[\s]*?<img src="(.*?)" width="120" height="90" border="0">#', $content, $out); //找到../img/player.gif
+		//$arr_data['movie_little_pic_cover'] = empty($out[1]) ? '' : str_replace(['http://pics.dmm.co.jp/mono/movie/adult/','//pics.dmm.co.jp/mono/movie/adult/','http://pics.dmm.co.jp/digital/video/','//pics.dmm.co.jp/digital/video/'], '',$out[1]);//'movie_pic_cover'//替换 域名  http://pics.dmm.co.jp/
+		//$arr_data['movie_little_pic_cover'] = empty($arr_data['movie_little_pic_cover']) ? '' : str_replace(['-1.jpg','-2.jpg'], 'pl.jpg',$arr_data['movie_little_pic_cover']);
+
+
+        preg_match_all('#<img src="(.*?)" width="120" height="90" border="0">#', $content, $out);
+        if (empty($out[1])) {
+        	$arr_data['movie_little_pic_cover']= '';
+            $arr_data['sample_dmm']= '0';
+        }else{
+            $arr_data['sample_dmm']= empty($gifsample[1]) ? count($out[1]) : count($out[1])-1;// str_replace('https://jp.netcdn.space/digital/', '', implode('|',$out[1]));
+            $arr_data['movie_little_pic_cover'] = empty($gifsample[1]) ? str_replace(['http://pics.dmm.co.jp/mono/movie/adult/','//pics.dmm.co.jp/mono/movie/adult/','http://pics.dmm.co.jp/digital/video/','//pics.dmm.co.jp/digital/video/'], '',$out[1][0]) : str_replace(['http://pics.dmm.co.jp/mono/movie/adult/','//pics.dmm.co.jp/mono/movie/adult/','http://pics.dmm.co.jp/digital/video/','//pics.dmm.co.jp/digital/video/'], '',$out[1][1]);//'movie_pic_cover'//替换 域名  http://pics.dmm.co.jp/
+            $arr_data['movie_little_pic_cover'] = empty($arr_data['movie_little_pic_cover']) ? '' : str_replace(['-1.jpg','-2.jpg'], 'pl.jpg',$arr_data['movie_little_pic_cover']);
+        }
 
         preg_match('#<td class="header">发行日期:</td>[\s]*?<td class="text">(.*?)</td>#', $content, $out);
         $arr_data['release_date'] = empty($out[1]) ? '' : $out[1];//'release_date'

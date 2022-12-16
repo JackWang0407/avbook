@@ -56,7 +56,7 @@ class MedooEx extends Medoo
 
                 if (!isset($data[ $key ]))
                 {
-                    $map[ $map_key ] = [null, PDO::PARAM_NULL];
+                    $map[ $map_key ] = [null, \PDO::PARAM_NULL];
                 }
                 else
                 {
@@ -71,7 +71,7 @@ class MedooEx extends Medoo
                                 strpos($key, '[JSON]') === strlen($key) - 6 ?
                                     json_encode($value) :
                                     serialize($value),
-                                PDO::PARAM_STR
+                                \PDO::PARAM_STR
                             ];
                             break;
 

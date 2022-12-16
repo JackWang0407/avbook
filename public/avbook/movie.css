@@ -240,6 +240,27 @@
 	display:none;
 }
 
+#edit-director {
+	display:none;
+}
+#edit-studio {
+	display:none;
+}
+#edit-label {
+	display:none;
+}
+#edit-series {
+	display:none;
+}
+
+#edit-desc {
+	display:none;
+}
+
+#edit-sample-dmm {
+	display:none;
+}
+
 /*Your AD Slider*/
 /*.label {*/
 	/*margin-left:5px;*/
