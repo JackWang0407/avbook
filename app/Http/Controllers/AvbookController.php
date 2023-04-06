@@ -55,10 +55,10 @@ class AvbookController extends Controller
 //        var_dump($request->owned);die;
         if($request->owned=='1'){
             $where_books[] =['owned','1'];
-            $page_info['ltitle'] = array_diff($page_info['ltitle'], ["未拥有"]);
+            $page_info['ltitle'] = array_diff($page_info['ltitle'], ["未擁有"]);
         }elseif ($request->owned === '0'){
             //var_dump($page_info['ltitle']);die;
-            $page_info['ltitle'] = array_diff($page_info['ltitle'], ["已拥有"]);
+            $page_info['ltitle'] = array_diff($page_info['ltitle'], ["已擁有"]);
             $where_books[] =['owned','0'];
         }
         if($request->favorite=='1'){
@@ -146,6 +146,7 @@ class AvbookController extends Controller
                 $Avbooks = Avbooks::select($table_key)->whereIn('censored_id', $idkeyk)->orderBy('censored_id', 'desc')->paginate(config('avbook.cen_per_page'));
                 if ($Avbooks->count()==1){
                     Header("Location: ".url('/movie?censored_id='.$Avbooks->first()->censored_id));
+                    exit;
                 }
             }
         }
@@ -297,11 +298,13 @@ class AvbookController extends Controller
             }
             $censored_id = $request->checkid;
         }
-        preg_match('#(\d{1,5})#', explode('-',$censored_id)[1], $outnum);
-        if(isset($outnum[1])){
-            $censored_id_num = $outnum[1];
-            $data['last_censored_id'] = str_replace($censored_id_num,''.sprintf('%03s', $censored_id_num+1),$censored_id);
-            $data['next_censored_id'] = str_replace($censored_id_num,''.sprintf('%03s', $censored_id_num-1),$censored_id);
+        if(isset(explode('-',$censored_id)[1])){
+            preg_match('#(\d{1,5})#', explode('-',$censored_id)[1], $outnum);
+            if(isset($outnum[1])){
+                $censored_id_num = $outnum[1];
+                $data['last_censored_id'] = str_replace($censored_id_num,''.sprintf('%03s', $censored_id_num+1),$censored_id);
+                $data['next_censored_id'] = str_replace($censored_id_num,''.sprintf('%03s', $censored_id_num-1),$censored_id);
+            }
         }
 
         if($request->id){
@@ -367,11 +370,14 @@ class AvbookController extends Controller
             }
             $censored_id = $request->checkid;
         }
-        preg_match('#(\d{1,5})#', explode('-',$censored_id)[1], $outnum);
-        if(isset($outnum[1])){
-            $censored_id_num = $outnum[1];
-            $data['last_censored_id'] = str_replace($censored_id_num,''.sprintf('%03s', $censored_id_num+1),$censored_id);
-            $data['next_censored_id'] = str_replace($censored_id_num,''.sprintf('%03s', $censored_id_num-1),$censored_id);
+
+        if(isset(explode('-',$censored_id)[1])){
+	        preg_match('#(\d{1,5})#', explode('-',$censored_id)[1], $outnum);
+	        if(isset($outnum[1])){
+	            $censored_id_num = $outnum[1];
+	            $data['last_censored_id'] = str_replace($censored_id_num,''.sprintf('%03s', $censored_id_num+1),$censored_id);
+	            $data['next_censored_id'] = str_replace($censored_id_num,''.sprintf('%03s', $censored_id_num-1),$censored_id);
+	        }
         }
 
         if($request->id){
@@ -382,12 +388,14 @@ class AvbookController extends Controller
         if (empty($movie_info)) {
             die($censored_id  ."==not find <a href = '/movie?censored_id={$data['last_censored_id']}'><=== </a> || <a href = '/movie?censored_id={$data['next_censored_id']}'>===> </a>");
         }
+        /*
         if($movie_info['visited']<254){
             $movie_info['visited']=$movie_info['visited'] +1;
             $t_update = ['visited'=>$movie_info['visited']];
             Avbooks::where('code_36',$movie_info['code_36'])->update($t_update);
 
         }
+        */
         $find=array('[',']');
         $movie_info['JAV_Idols'] = str_replace($find, '',str_replace('][', ',', $movie_info['JAV_Idols']));
         $arr_star = explode(',', $movie_info['JAV_Idols']);
