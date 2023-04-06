@@ -101,15 +101,54 @@
                     <div class="avatar-box">
                     
                         <div class="photo-frame">
-                        <?php if (!file_exists("mono/actjpgs/".$res_star['star_pic'])): ?>
-                            <img class="star_pic"
-                                 src="https://jp.netcdn.space/mono/actjpgs/<?php echo $res_star['star_pic'] ?>"
-                                 title="<?php echo $res_star['star_name'] ?>">
-                        <?php else :?>
-							<img class="star_pic"
-                                 src="mono/actjpgs/<?php echo $res_star['star_pic'] ?>"
-                                 title="<?php echo $res_star['star_name'] ?>">
-                        <?php endif; ?>
+						<?php
+							function CheckPicUrl($url){
+								$ch = curl_init();
+								curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); //是否跟着爬取重定向的页面
+								curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //将curl_exec()获取的值以文本流的形式返回，而不是直接输出。
+								curl_setopt($ch, CURLOPT_HEADER,  1); // 启用时会将头文件的信息作为数据流输出
+								curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60); //设置超时时间
+								curl_setopt($ch, CURLOPT_URL, $url);  //设置URL
+								curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+								curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,  2);
+								$content = curl_exec($ch);
+								$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);  //curl的httpcode
+								$headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE); //获取头大小
+								curl_close($ch);
+								return $httpcode;
+							};
+
+							function SelectPicUrl($jpgname){
+								$url = "mono/actjpgs/".$jpgname;
+								if (file_exists($url)):
+									if (CheckPicUrl($url)==200):
+									return $url;
+									endif;
+								else:
+									$url = "https://pics.vpdmm.cc/mono/actjpgs/".$jpgname;
+									if (CheckPicUrl($url)==200):
+										return $url;
+									endif;
+									$url = "https://pics.dmm.co.jp/mono/actjpgs/".$jpgname;
+									if (CheckPicUrl($url)==200):
+										return $url;
+									endif;
+									$url = "https://jp.netcdn.space/mono/actjpgs/".$jpgname;
+									if (CheckPicUrl($url)==200):
+										return $url;
+									endif;
+								endif;
+
+								return $url;
+							};
+							$srcurl = SelectPicUrl($res_star['star_pic']);
+						?>
+
+						<img class="star_pic"
+						src="<?php echo $srcurl ?>"
+						title="<?php echo $res_star['star_name'] ?>
+						">
+
                         </div>
                         <?php 
 						function birthday($birthday){ 
@@ -163,10 +202,11 @@
                             	<p>爱好: <?php   echo $res_star['hobby'] ?></p>
                             <?php endif; ?>
                             
+                            <p><a target="_blank" style="color:#CC0000;" href="https://actress.dmm.co.jp/-/search/=/searchstr=<?php echo $res_star['star_name']?>/">dmm</a</p>
                             <p><a target="_blank" style="color:#CC0000;" href="https://susukino-peropero.com/av%E9%A2%A8%E4%BF%97%E5%AC%A2%E5%9C%A8%E7%B1%8D%E6%83%85%E5%A0%B1%EF%BC%9A<?php echo $res_star['star_name'] ?>/#toc6">av風俗嬢在籍情報</a</p>
                             <p><a target="_blank" style="color:#CC0000;" href="https://ja.wikipedia.org/wiki/<?php echo $res_star['star_name'] ?>">百科事典</a</p>
                             <p><a target="_blank" style="color:#CC0000;" href="https://airav.cc/avgirlInfo.aspx?Type=2&Search=<?php echo $res_star['star_name'] ?>">AirAV</a</p>
-                            
+                            <p><a target="_blank" style="color:#CC0000;" href="https://db.msin.jp/jp.search/actress?str=<?php echo $res_star['star_name'] ?>">AV女優別名サーチ</a</p>
                             <p>
                                 <a href="censored?st0=<?php echo $res_star['code_36'] ?>"
                                    target="_blank" style="color:#CC0000;">独自演出作品</a></p>
