@@ -461,10 +461,10 @@ http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
 
                    onclick="change_state('{{$key}}','{{$newstate}}',this)" >{{$val[0]}}</a>
                 <?php endforeach; ?>
-
+<!--
                 <a class="btn btn-mini-new btn-default" title = "清除访问记录 {{$movie_info['visited']}} "
                    onclick="change_state('visited','0');$(this).html(0);" >{{$movie_info['visited']}}</a>
-
+-->
             </p>
 
 
