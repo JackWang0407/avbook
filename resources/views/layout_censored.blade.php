@@ -101,6 +101,66 @@
                     <div class="avatar-box">
                     
                         <div class="photo-frame">
+						<script>
+							function TestAndLoadImageBySpeed() {
+								var imageSources = [
+									'http://192.168.0.109/digital/video/',
+									'https://pics.vpdmm.cc/digital/video/',
+									'https://pics.dmm.co.jp/digital/video/',
+									'https://jp.netcdn.space/digital/video/'		
+								];
+
+								var fastestImageIndex = -1;
+								var fastestLoadTime = Infinity;
+
+								function loadImage(index) {
+									var startTime = performance.now();
+									var img = new Image();
+
+									img.onload = function() {
+										var loadTime = performance.now() - startTime;
+
+										if (loadTime < fastestLoadTime) {
+										fastestLoadTime = loadTime;
+										fastestImageIndex = index;
+										}
+
+										if (index < imageSources.length - 1) {
+										// Load the next image
+										loadImage(index + 1);
+										} else {
+										// All images have been loaded, display the fastest one
+										displayFastestImage();
+										}
+									};
+
+									img.onerror = function() {
+										if (index < imageSources.length - 1) {
+											// Load the next image
+											loadImage(index + 1);
+										} else {
+											// All images have been loaded, display the fastest one
+											displayFastestImage();
+										}
+									};
+
+									img.src = imageSources[index];
+								}
+
+								function displayFastestImage() {
+									if (fastestImageIndex !== -1) {
+										var img = new Image();
+										img.src = imageSources[fastestImageIndex];
+										document.body.appendChild(img);
+									} else {
+										console.log('Failed to load any image.');
+									}
+								}
+
+								// Start loading the first image
+								loadImage(0);
+							}
+						</script>
 						<?php
 							function CheckPicUrl($url){
 								$ch = curl_init();
