@@ -15,6 +15,7 @@
     var censored_id = "{{$movie_info['censored_id']}}";
     var gid = "{{$avbus->gid ??  ''}}";
     var code_36 = "<?php echo $movie_info['code_36'] ?>";
+	var avbook_id = "<?php echo $movie_info['avbook_id'] ?>";
     var uc = 0;
     var img = 'https://pics.javbus.info/cover/5r2i_b.jpg';
 </script>
@@ -139,17 +140,7 @@
 	?>
     </h3>
     <span id="edit-submit-show" style="cursor: pointer;" class="glyphicon glyphicon-cog"></span>
-<!--
-<style>
-	body {
-		background:url("{{$picurl.$movie_info['movie_pic_cover']}}") no-repeat center center;
-		background-size:cover;
-		background-attachment:fixed;
-		background-color: #ff00004d;
-		
-	}
-</style>
--->
+
 <script>
 /*
 window.onload=function(){
@@ -258,19 +249,20 @@ window.onload=function(){
             <span class="header">磁力搜索:</span>
             <p>
             	<a target="_blank"  href="http://clm2.net/search?word=<?php echo ($movie_info['censored_id']) ?>&sort=length"> <span class="btn btn-mini-new btn-primary">磁力猫</span></a>
-            	<a target="_blank"  href="http://so.1inu.online/go_7.php?s=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">磁力狗</span></a>
-            	<a target="_blank"  href="http://so.1inu.online/go_6.php?s=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">磁力狗</span></a>
-            	<a target="_blank"  href="https://btsow.beauty/search/<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">btsow</span></a>
+            	<a target="_blank"  href="https://btsow.com/search/<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">btsow</span></a>
             </p>
 
             <span class="header">訊息網站</span>
             <p>
+	            <a target="_blank"  href="https://www.dmm.co.jp/mono/dvd/-/search/=/searchstr=<?php echo $movie_info['censored_id'] ?>/"> <span class="btn btn-mini-new btn-primary">DMM-DVD</span></a>
+	            <a target="_blank"  href="https://www.dmm.co.jp/digital/videoa/-/detail/=/cid=<?php echo $movie_info['avbook_id'] ?>/"> <span class="btn btn-mini-new btn-primary">DMM-ビデオ</span></a>
 	            <a target="_blank"  href="https://{{$url_config['javbushost']}}/<?php echo $movie_info['censored_id'] ?>"> <span class="btn btn-mini-new btn-primary">JavBUS</span></a>
 	            <a target="_blank"  href="https://{{$url_config['avmoohost']}}/ja/movie/<?php echo $movie_info['code_36'] ?>"> <span class="btn btn-mini-new btn-primary">AVMoo</span></a>
+	            <a target="_blank"  href="https://db.msin.jp/jp.search/movie?str=<?php echo $movie_info['censored_id'] ?>"> <span class="btn btn-mini-new btn-primary"><?php echo $movie_info['censored_id'] ?>の検索結果</span></a>
 	            <a target="_blank"  href="https://{{$url_config['javlibhost']}}/ja/vl_searchbyid.php?keyword=<?php echo $movie_info['censored_id'] ?>"> <span class="btn btn-mini-new btn-primary">JavLibrary</span></a>
             	<a target="_blank"  href="https://javdb.com/search?q=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">JavDB</span></a>
             	<a target="_blank"  href="https://ggjav.com/main/search?string=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">GGJav</span></a>
-            	<a target="_blank"  href="https://jav.land/tw/id_search.php?keys=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">Jav.Land</span></a>
+            	<a target="_blank"  href="https://jav.land/ja/id_search.php?keys=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">Jav.Land</span></a>
             	<a target="_blank"  href="https://www.airav.wiki/?search=<?php echo ($movie_info['censored_id']) ?>"> <span class="btn btn-mini-new btn-primary">AirAV.Wiki</span></a>
             </p>
 			<span class="header">下載網站</span>
@@ -304,7 +296,7 @@ window.onload=function(){
             <!--   //cc3001.dmm.co.jp/litevideo/freepv/o/ofj/ofje00070/ofje00070_dmb_w.mp4
             //cc3001.dmm.co.jp/litevideo/freepv/n/n_1/n_1010gihhd067/n_1010gihhd067_dmb_w.mp4
 http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
--->
+
             <p><span class="header">預告片:</span>
 
 
@@ -321,7 +313,7 @@ http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
                         echo str_replace('_dmb_w.mp4','',basename($pic_video))    ?></span></a>
 
             </p>
-
+-->
 
             @if ($movie_info['release_date'])
 				<p>
@@ -461,10 +453,7 @@ http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
 
                    onclick="change_state('{{$key}}','{{$newstate}}',this)" >{{$val[0]}}</a>
                 <?php endforeach; ?>
-<!--
-                <a class="btn btn-mini-new btn-default" title = "清除访问记录 {{$movie_info['visited']}} "
-                   onclick="change_state('visited','0');$(this).html(0);" >{{$movie_info['visited']}}</a>
--->
+
             </p>
 
 
@@ -717,7 +706,7 @@ http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
         <script>
 
             function change_genre(obj,s){
-                var t = "/api/change_genre?Genre="+s+"&code_36="+code_36  ;
+                var t = "/api/change_genre?Genre="+s+"&avbook_id="+avbook_id  ;
                 var obj = $(obj);
                 $.ajax({
                     url: t,
@@ -737,7 +726,7 @@ http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
                 });
             };
             function change_state(key,value,objs){
-                var t = "/api/change_state?statekey="+key+"&statevalue="+value  +"&code_36="+code_36  ;
+                var t = "/api/change_state?statekey="+key+"&statevalue="+value  +"&avbook_id="+avbook_id  ;
                 var obj = $(objs);
                 $.ajax({
                     url: t,
@@ -760,7 +749,7 @@ http://www.q30x.com/cn/vl_searchbyid.php?keyword=ABS-231
             };
 			
             function change_info(key,value,objs){
-                var t = "/api/change_info?key="+key+"&value="+value  +"&code_36="+code_36  ;
+                var t = "/api/change_info?key="+key+"&value="+value  +"&avbook_id="+avbook_id  ;
                 var obj = $(objs);
                 $.ajax({
                     url: t,

@@ -14,9 +14,9 @@ class MovieinfoController extends Controller
 {
     public function change_state(Request $request)
     {
-        if (empty($request->code_36 || $request->statekey )) {
-            $res['code'] = 0;
-            $res['msg'] = 'code_36 needed' ;
+        if (empty($request->avbook_id || $request->statekey )) {
+            $res['avbook_id'] = 0;
+            $res['msg'] = 'avbook_id needed' ;
             return $res;
         }
         $request->statevalue = intval($request->statevalue);
@@ -28,24 +28,24 @@ class MovieinfoController extends Controller
           //  $data = array( $request->statekey => $request->statevalue,'have_file'=> 3 );
         }
 
-        $r = Avbooks::where('code_36',$request->code_36)->update($data);
+        $r = Avbooks::where('avbook_id',$request->avbook_id)->update($data);
 
-        $res['code'] = $request->statevalue>0?1:0;
+        $res['avbook_id'] = $request->statevalue>0?1:0;
         $res['msg'] = "{$request->statekey} 更新成功：".$r;
 
         return $res;
     }
     public function change_info(Request $request)
     {
-        if (empty($request->code_36 || $request->key)) {
-            $res['code'] = 0;
-            $res['msg'] = 'code_36 needed' ;
+        if (empty($request->avbook_id || $request->key)) {
+            $res['avbook_id'] = 0;
+            $res['msg'] = 'avbook_id needed' ;
             return $res;
         }
         $data = array( $request->key =>  $request->value );//!生产环境应过滤字段 but...
-        $r = Avbooks::where('code_36',$request->code_36)->update($data);
+        $r = Avbooks::where('avbook_id',$request->avbook_id)->update($data);
 
-        $res['code'] = $request->value>0?1:0;
+        $res['avbook_id'] = $request->value>0?1:0;
         $res['msg'] = "{$request->key} 更新成功：".$r;
 
         return $res;
@@ -181,10 +181,10 @@ echo $tmp_result ;die;
     }
     public function change_genre(Request $request)
     {
-        if (empty($request->code_36 || $request->Genre )) {
-            return 'code_36 needed';
+        if (empty($request->avbook_id || $request->Genre )) {
+            return 'avbook_id needed';
         }
-        $movie_info= Avbooks::where('code_36',$request->code_36)->first();
+        $movie_info= Avbooks::where('avbook_id',$request->avbook_id)->first();
         $find=array('[',']');
         $str = str_replace($find, '',str_replace('][', ',', $movie_info['Genre']));
         $arr = explode(',', $str);
@@ -196,13 +196,13 @@ echo $tmp_result ;die;
                 $tempstr = '[4m]';
             }
             $data = array( 'Genre' =>  $movie_info['Genre'].'['.$request->Genre .']'.$tempstr );
-            Avbooks::where('code_36',$request->code_36)->update($data);
+            Avbooks::where('avbook_id',$request->avbook_id)->update($data);
             $res['code']=1;
             $res['msg'] = "添加成功";
 
         }else{
             $data = array( 'Genre' => str_replace('['.$request->Genre .']' , '', $movie_info['Genre']) );
-            Avbooks::where('code_36',$request->code_36)->update($data);
+            Avbooks::where('avbook_id',$request->avbook_id)->update($data);
             $res['code']=2;
             $res['msg'] = "删除成功";
         }
@@ -236,7 +236,7 @@ echo $tmp_result ;die;
 //                $res['msg'] = "添加成功";
             }else{
                 $data = array( 'Genre' => str_replace('['.$request->Genre .']' , '', $movie_info['Genre']) );
-                Avbooks::where('code_36',$movie_info['code_36'])->update($data);
+                Avbooks::where('avbook_id',$movie_info['avbook_id'])->update($data);
                 $res['code']=2;
                 $res['msg'] = "删除成功";
             }
