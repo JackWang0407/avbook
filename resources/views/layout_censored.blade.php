@@ -280,7 +280,7 @@
 
 
                 <?php
-                $b = 3;
+                $b = 2;
 				if ($b==1) {
 				    $picurl ='https://jp.netcdn.space/digital/video/';
 				    $picurl2 ='https://pics.dmm.co.jp/mono/movie/adult/';

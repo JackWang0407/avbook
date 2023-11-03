@@ -68,7 +68,7 @@
 
     }
 
-	$b=3;
+	$b=2;
 	/*
 	$urllist = array (
 		'utry320.synology.me:5080',

@@ -28,11 +28,12 @@
 					};
 
 					function SelectPicUrl($jpgname){
-						$url = "https://pics.vpdmm.cc/mono/actjpgs/";
+						
+						$url = "https://pics.dmm.co.jp/mono/actjpgs/";
 						if (CheckPicUrl($url.$jpgname)==200):
 							return $url;
 						endif;
-						$url = "https://pics.dmm.co.jp/mono/actjpgs/";
+						$url = "https://pics.vpdmm.cc/mono/actjpgs/";
 						if (CheckPicUrl($url.$jpgname)==200):
 							return $url;
 						endif;
